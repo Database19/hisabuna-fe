@@ -1,8 +1,5 @@
 'use client'
 
-// use config .env
-// require('dotenv').config()
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
@@ -11,38 +8,49 @@ import { Alert } from "@/components/ui/alert"
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/navigation'
 import axios from "axios"
-import { env } from "process"
-
-axios.defaults.withCredentials = true;
+import { useCookies } from 'react-cookie';
 
 export default function LoginPage() {
-
-    // const url = process.env.REACT_APP_URLDEV;
-
     const router = useRouter()
     const [isAccountInvalid, setAccountInvalid] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isColor, setColor] = useState("");
+    const [error, setError] = useState("");
+
+    axios.defaults.withCredentials = true;
 
     const handleSignIn = async () => {
-        await axios.get(`https://hisabuna.lokaldown.com/sanctum/csrf-cookie`, {
-        }).then(response => {
-            console.log(response);
-        })
+        try {
+            await axios.get(process.env.NEXT_PUBLIC_URLPROD + "/sanctum/csrf-cookie", {});
+            const response = await axios.post(process.env.NEXT_PUBLIC_URLPROD + "/api/login", {
+                email: email,
+                password: password
+            });
 
-        axios.post(`https://hisabuna.lokaldown.com/api/login`, {
-            email: email,
-            password: password
-        }).then(response => {
-            console.log(response);
-            if (response.status === 200) {
-                router.push("/dashboard");
+            if(response.data.status == true){
+                localStorage.setItem('authToken', response.data.access_token);
+                setError(response.data.message);
+                setColor("green");
+                setAccountInvalid(true);
+
+                
+                setTimeout(() => {
+                    router.push('/dashboard');
+                }, 3000);
+            }else{
+                setError(response.data.message);
+                setColor("red");
+                setAccountInvalid(true);
             }
-        }).catch(error => {
-            console.log(error);
+
+        } catch (error) {
+            setError(error);
+            setColor("red");
             setAccountInvalid(true);
-        })
+        }
     };
+    
 
     return (
         <main className="flex h-screen w-full">
@@ -62,9 +70,9 @@ export default function LoginPage() {
                 </div>
                 <div className="h-16 flex items-center w-full px-5 py-2 max-w-md">
                     {isAccountInvalid && (
-                        <div className="flex gap-2 border border-red-400 bg-red-100 p-2 rounded w-full">
-                            <div className="border border-red-400 rounded-full size-5 text-xs text-red-400 font-bold grid place-items-center">!</div>
-                            <p className="text-sm text-red-400">Email atau password salah.</p>
+                        <div className={`flex gap-2 border border-${isColor}-400 bg-${isColor}-100 p-2 rounded w-full`}>
+                            <div className={`border border-${isColor}-400 rounded-full size-5 text-xs text-${isColor}-400 font-bold grid place-items-center`}>!</div>
+                            <p className={`text-sm text-${isColor}-400`}>{error}</p>
                         </div>
                     )}
                 </div>
