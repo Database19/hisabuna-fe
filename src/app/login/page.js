@@ -35,6 +35,7 @@ export default function LoginPage() {
                 email: email,
                 password: password
             });
+            console.log(response)
 
             if(response.data.status == true){
                 localStorage.setItem('authToken', response.data.access_token);
