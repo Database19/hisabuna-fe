@@ -52,19 +52,19 @@ export default function Sidebar() {
             {!isLoading && data && data.name == 'superadmin' && (
                 <div className="px-4 py-8 flex flex-col border-b border-b-zinc-200">
                 <p className="text-sm font-medium text-zinc-400 tracking-widest mb-2">USER</p>
-                    <MenuItem icon="ic-users" menuName="Users" link="/users" pathName={pathname} />
+                    <MenuItem icon="ic-users" menuName="Users" link="/dashboard/users" pathName={pathname} />
                 </div>
             )}
 
             <div className="px-4 py-8 flex flex-col border-b border-b-zinc-200">
                 <p className="text-sm font-medium text-zinc-400 tracking-widest mb-2">KONFIGURASI</p>
                 <MenuItem icon="ic-coa-config" menuName="Chart of Account" link="/dashboard/coa" pathName={pathname} />
-                <MenuItem icon="ic-saldo-awal" menuName="Saldo Awal" link="" pathName={pathname} />
+                <MenuItem icon="ic-saldo-awal" menuName="Saldo Awal"pathName={pathname} link="/dashboard/saldo-awal" />
             </div>
 
             <div className="px-4 py-8 flex flex-col">
                 <p className="text-sm font-medium text-zinc-400 tracking-widest">LAPORAN</p>
-                <MenuItem icon="ic-laporan" menuName="Laba Rugi" />
+                <MenuItem icon="ic-laporan" menuName="Laba Rugi" link='/dashboard/laba-rugi' pathName={pathname} />
                 <MenuItem icon="ic-laporan" menuName="Perubahan Ekuitas/Modal" />
                 <MenuItem icon="ic-laporan" menuName="Laporan Arus Kas" />
                 <MenuItem icon="ic-laporan" menuName="Neraca Saldo" />
